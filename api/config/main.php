@@ -52,13 +52,23 @@ return [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'collection',
                     'extraPatterns' => [
-                        'GET byuser/{userID}' => 'byuser',
+                        'GET byuser/{userID}'   => 'byuser',
                     ],
                     'tokens' => [
-                        '{userID}' => '<userID:\\d[\\d,]*>'
+                        '{userID}'  => '<userID:\\d[\\d,]*>'
                     ]
                 ],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'image'],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'image',
+                    'extraPatterns' => [
+                        'GET bycollection/{collectionID}'   => 'bycollection',
+                        'POST uploadimage'                  => 'uploadimage'
+                    ],
+                    'tokens' => [
+                        '{collectionID}'    => '<userID:\\d[\\d,]*>'
+                    ]
+                ],
             ],
         ],
     ],

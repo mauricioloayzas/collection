@@ -10,13 +10,6 @@ class CollectionController extends DefaultController
 {
     public $modelClass = 'common\models\Collections';
 
-    /*public function actions()
-    {
-        $actions = parent::actions();
-        $actions['index']['byUser'] = [$this, 'byUser'];
-        return $actions
-    }*/
-
 
     public function actionByuser($userID)
     {

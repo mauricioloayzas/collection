@@ -3,6 +3,10 @@ namespace api\controllers;
 
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\ActiveController;
+use Yii;
+
+use common\models\User;
+use common\models\UserQuery;
 
 class DefaultController extends ActiveController
 {
@@ -25,12 +29,12 @@ class DefaultController extends ActiveController
     }
 
 
-    /*public function behaviors()
+    public function behaviors()
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
         ];
         return $behaviors;
-    }*/
+    }
 }
