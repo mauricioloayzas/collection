@@ -38,4 +38,18 @@ class CollectionsQuery extends \yii\db\ActiveQuery
         return $this->where(['collection_status'    => TRUE])
             ->andWhere(['user_id'   => $userID])->all();
     }
+
+
+    public function searchQueryUser($params)
+    {
+        if(!isset($params['user_id'])){
+            return $this->joinWith('user')
+                ->where(['collection_status'    => TRUE]);
+        }else{
+            return $this->joinWith('user')
+                ->where(['collection_status'    => TRUE])
+                ->andWhere(['user_id'    => $params['user_id']]);
+        }
+
+    }
 }
