@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model common\models\Collections */
 
 $this->title = 'Update Collections: ' . $model->collection_id;
-$this->params['breadcrumbs'][] = ['label' => 'Collections', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Collections', 'url' => ['index', 'user_id' => $model->user_id]];
 $this->params['breadcrumbs'][] = ['label' => $model->collection_id, 'url' => ['view', 'id' => $model->collection_id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

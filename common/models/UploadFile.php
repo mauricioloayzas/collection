@@ -18,9 +18,8 @@ class UploadFile extends Model
         ];
     }
 
-    public function upload($user, $collection)
+    public function upload($folder)
     {
-        $folder = "images/".$user."/".$collection."/";
         if ($this->validate()) {
             $this->imageFile->saveAs($folder . $this->imageFile->baseName . '.' . $this->imageFile->extension);
             return [

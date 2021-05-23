@@ -35,8 +35,9 @@ class ImageController extends DefaultController
                 mkdir(Yii::$app->basePath."/web/images/".$data['user']."/".$data['collection'], 0777);
             }
 
+            $folder = Yii::$app->basePath."/web/images/".$data['user']."/".$data['collection']."/";
             $model->imageFile = UploadedFile::getInstanceByName('imageFile');
-            return $model->upload($data['user'], $data['collection']);
+            return $model->upload($folder);
         }
     }
 }

@@ -64,27 +64,11 @@ class Images extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return CollectionsQuery the active query used by this AR class.
+     * @return ImagesQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new CollectionsQuery(get_called_class());
-    }
-
-    /**
-     * @return array
-     */
-    public function getDirtyAttributes()
-    {
-        return $this->dirtyAttributes;
-    }
-
-    /**
-     * @param array $dirtyAttributes
-     */
-    public function setDirtyAttributes($dirtyAttributes)
-    {
-        $this->dirtyAttributes = $dirtyAttributes;
+        return new ImagesQuery(get_called_class());
     }
 
     /**

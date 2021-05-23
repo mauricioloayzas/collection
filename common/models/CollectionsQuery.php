@@ -33,6 +33,13 @@ class CollectionsQuery extends \yii\db\ActiveQuery
     }
 
 
+    public function byID($iD)
+    {
+        return $this->where(['collection_status'    => TRUE])
+            ->andWhere(['collection_id'   => $iD])->one();
+    }
+
+
     public function byUser($userID)
     {
         return $this->where(['collection_status'    => TRUE])

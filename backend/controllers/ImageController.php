@@ -1,0 +1,229 @@
+<?php
+
+namespace backend\controllers;
+
+
+use common\models\Collections;
+use common\models\CollectionsQuery;
+use yii\filters\AccessControl;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use Yii;
+
+use common\models\Images;
+use common\models\ImageSerach;
+use common\models\UploadFile;
+
+/**
+ * ImageController implements the CRUD actions for Images model.
+ */
+class ImageController extends Controller
+{
+    /**
+     * @inheritDoc
+     */
+    public function behaviors()
+    {
+        return array_merge(
+            parent::behaviors(),
+            [
+                'access' => [
+                    'class' => AccessControl::className(),
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
+                'verbs' => [
+                    'class' => VerbFilter::className(),
+                    'actions' => [
+                        'delete' => ['POST'],
+                    ],
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Lists all Images models.
+     * @return mixed
+     */
+    public function actionIndex()
+    {
+        $searchModel = new ImageSerach();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        $params = $this->request->queryParams;
+        if(!isset($params['collection_id'])){
+            $params['collection_id'] = 0;
+        }
+
+        return $this->render('index', [
+            'searchModel'   => $searchModel,
+            'dataProvider'  => $dataProvider,
+            'collection_id' => $params['collection_id']
+        ]);
+    }
+
+    /**
+     * Displays a single Images model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {
+        $params = $this->request->queryParams;
+        if(!isset($params['collection_id'])){
+            $params['collection_id'] = 0;
+        }
+
+        $model = $this->findModel($id);
+        if(!is_null($model)){
+            $params['collection_id'] = $model->getCollectionId();
+        }
+
+        return $this->render('view', [
+            'model'         => $model,
+            'collection_id' => $params['collection_id']
+        ]);
+    }
+
+    /**
+     * Creates a new Images model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $params = $this->request->getQueryParams();
+        $modelFile = new UploadFile();
+        $model = new Images();
+        $model->setCollectionId($params['collection_id']);
+
+        $collectionQuery = new CollectionsQuery(new Collections());
+        $collection =$collectionQuery->byID($params['collection_id']);
+        $collection = $collection->toArray();
+
+        if ($this->request->isPost && is_array($collection) && isset($collection['user_id'])) {
+            $modelFile->imageFile = UploadedFile::getInstance($modelFile,'imageFile');
+            if(!is_dir(Yii::$app->basePath."/../api/web/images/".$collection['user_id'])){
+                mkdir(Yii::$app->basePath."/../api/web/images/".$collection['user_id'], 0777);
+            }
+
+            if(!is_dir(Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$params['collection_id'])){
+                mkdir(Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$params['collection_id'], 0777);
+            }
+
+            $folder = Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$params['collection_id']."/";
+            if($modelFile->upload($folder)){
+                $model->setCollectionId($params['collection_id']);
+                $model->setImageStatus(TRUE);
+                $model->setImageDescription($modelFile->imageFile->name);
+                if ($model->save()) {
+                    return $this->redirect([
+                        'view',
+                        'id'            => $model->image_id,
+                        'collection_id' => $params['collection_id']
+                    ]);
+                }
+            }else{
+                $model->loadDefaultValues();
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('create', [
+            'modelFile'    => $modelFile,
+            'collection_id' => $params['collection_id']
+        ]);
+    }
+
+    /**
+     * Updates an existing Images model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate($id)
+    {
+        $modelFile = new UploadFile();
+        $model = $this->findModel($id);
+
+        $collectionQuery = new CollectionsQuery(new Collections());
+        $collection =$collectionQuery->byID($model->getCollectionId());
+        $collection = $collection->toArray();
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->image_id]);
+        }
+
+        if ($this->request->isPost && is_array($collection) && isset($collection['user_id'])) {
+            $modelFile->imageFile = UploadedFile::getInstance($modelFile,'imageFile');
+            if(!is_dir(Yii::$app->basePath."/../api/web/images/".$collection['user_id'])){
+                mkdir(Yii::$app->basePath."/../api/web/images/".$collection['user_id'], 0777);
+            }
+
+            if(!is_dir(Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$model->getCollectionId())){
+                mkdir(Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$model->getCollectionId(), 0777);
+            }
+
+            $folder = Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$model->getCollectionId()."/";
+            if($modelFile->upload($folder)){
+                $model->setImageDescription($modelFile->imageFile->name);
+                if ($model->save()) {
+                    return $this->redirect([
+                        'view',
+                        'id'            => $model->image_id,
+                        'collection_id' => $model->getCollectionId()
+                    ]);
+                }
+            }else{
+                $model->loadDefaultValues();
+            }
+        }
+
+        return $this->render('update', [
+            'modelFile'     => $modelFile,
+            'model'         => $model,
+            'collection_id' => $model->getCollectionId()
+        ]);
+    }
+
+    /**
+     * Deletes an existing Images model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Images model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Images the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Images::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+}
