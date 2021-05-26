@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'collections',
                     'value' => function ($model) {
-                        $url = Url::toRoute(['collection/index',  'user_id' => $model->id], true);
+                        $url = Url::toRoute(['collection/index']);
                         return Html::a(
                             'collections',
                             $url,

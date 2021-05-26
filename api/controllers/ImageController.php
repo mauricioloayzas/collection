@@ -6,38 +6,46 @@ use yii\web\UploadedFile;
 use Yii;
 
 use common\models\Images;
+use common\models\ImagesQuery;
 use common\models\UploadFile;
 
 
 class ImageController extends DefaultController
 {
-    public $modelClass = 'common\models\Collections';
+    public $modelClass = 'common\models\Images';
 
 
     public function actionBycollection($collectionID)
     {
-        /*$model = new ImageQuery(new Collections());
-        return $model->byUser($userID);*/
+        $model = new ImagesQuery(new Images());
+        return $model->byCollections($collectionID);
     }
 
 
-    public function actionUploadimage()
+    public function actionFindbyid($imageID)
     {
-        $model = new UploadFile();
+        $model = new ImagesQuery(new Images());
+        return $model->byID($imageID);
+    }
 
-        if (Yii::$app->request->isPost) {
-            $data = Yii::$app->request->getBodyParams();
-            if(!is_dir(Yii::$app->basePath."/web/images/".$data['user'])){
-                mkdir(Yii::$app->basePath."/web/images/".$data['user'], 0777);
-            }
 
-            if(!is_dir(Yii::$app->basePath."/web/images/".$data['user']."/".$data['collection'])){
-                mkdir(Yii::$app->basePath."/web/images/".$data['user']."/".$data['collection'], 0777);
-            }
-
-            $folder = Yii::$app->basePath."/web/images/".$data['user']."/".$data['collection']."/";
-            $model->imageFile = UploadedFile::getInstanceByName('imageFile');
-            return $model->upload($folder);
+    public function actionUpdatedata($imageID)
+    {
+        $data =[
+            'Images'   => \Yii::$app->request->post(),
+        ];
+        $model = new ImagesQuery(new Images());
+        $image = $model->byID($imageID);
+        $image->load($data);
+        if($image->save()){
+            $response = $image->toArray();
+        }else{
+            $response = [
+                'msg'   => 'error to save the data',
+                'success' => FALSE,
+            ];
         }
+
+        return $response;
     }
 }

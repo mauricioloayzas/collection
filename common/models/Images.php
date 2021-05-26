@@ -8,7 +8,9 @@ use Yii;
  * This is the model class for table "images".
  *
  * @property int $image_id
- * @property string $image_description
+ * @property string $image_unsplash_id
+ * @property string $image_url
+ * @property string $image_order
  * @property bool $image_status
  * @property int|null $collection_id
  *
@@ -30,11 +32,12 @@ class Images extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['image_description'], 'required'],
+            [['image_unsplash_id', 'image_url', 'image_order'], 'required'],
             [['image_status'], 'boolean'],
             [['collection_id'], 'default', 'value' => null],
-            [['collection_id'], 'integer'],
-            [['image_description'], 'string', 'max' => 45],
+            [['collection_id', 'image_order'], 'integer'],
+            [['image_unsplash_id'], 'string', 'max' => 45],
+            [['image_unsplash_id'], 'string', 'max' => 45],
             [['collection_id'], 'exist', 'skipOnError' => true, 'targetClass' => Collections::className(), 'targetAttribute' => ['collection_id' => 'collection_id']],
         ];
     }
@@ -46,7 +49,9 @@ class Images extends \yii\db\ActiveRecord
     {
         return [
             'image_id' => 'Image ID',
-            'image_description' => 'Image Description',
+            'image_unsplash_id' => 'Unsplash ID',
+            'image_url' => 'Unsplash URL',
+            'image_order' => 'Order',
             'image_status' => 'Image Status',
             'collection_id' => 'Collection ID',
         ];
@@ -90,17 +95,49 @@ class Images extends \yii\db\ActiveRecord
     /**
      * @return string
      */
-    public function getImageDescription()
+    public function getImageUnsplashId()
     {
-        return $this->image_description;
+        return $this->image_unsplash_id;
     }
 
     /**
-     * @param string $image_description
+     * @param string $image_unsplash_id
      */
-    public function setImageDescription($image_description)
+    public function setImageUnsplashId($image_unsplash_id)
     {
-        $this->image_description = $image_description;
+        $this->image_unsplash_id = $image_unsplash_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageUrl()
+    {
+        return $this->image_url;
+    }
+
+    /**
+     * @param string $image_url
+     */
+    public function setImageUrl($image_url)
+    {
+        $this->image_url = $image_url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageOrder()
+    {
+        return $this->image_order;
+    }
+
+    /**
+     * @param string $image_order
+     */
+    public function setImageOrder($image_order)
+    {
+        $this->image_order = $image_order;
     }
 
     /**

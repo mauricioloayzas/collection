@@ -1,9 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $modelFile common\models\UploadFile */
+/* @var $model common\models\Images */
 
 $this->title = 'Create Images';
 $this->params['breadcrumbs'][] = ['label' => 'Images', 'url' => ['index', 'collection_id' => $collection_id]];
@@ -13,8 +14,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12 form-group">
+            <label for="query">Serach Images</label>
+            <input type="text" id="query" class="form-control">
+            <input type="hidden" id="search-url" value="<?= url::toRoute(['image/search'], true) ?>">
+        </div>
+    </div>
+    <div class="row" id="content-image-unsplash"></div>
+
     <?= $this->render('_form', [
-        'modelFile' => $modelFile,
+        'model' => $model,
     ]) ?>
 
 </div>
+
+<?php $this->registerJsFile(
+    '@web/js/image.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+); ?>

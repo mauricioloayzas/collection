@@ -1,5 +1,5 @@
 <?php
-
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -38,6 +38,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => function ($model) {
                         $user = User::findIdentity($model->user_id);
                         return $user->getUsername();
+                    },
+                    'format' => 'raw',
+                ],
+                [
+                    'attribute' => 'Images',
+                    'value' => function ($model) {
+                        $url = Url::toRoute(['image/index', 'collection_id' => $model->collection_id]);
+                        return Html::a(
+                            'images',
+                            $url,
+                            ['title' => 'images',]
+                        );
                     },
                     'format' => 'raw',
                 ],

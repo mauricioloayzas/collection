@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="images-view">
 
-    <h1><?= Html::encode($model->image_description) ?></h1>
+    <h1><?= Html::encode($model->image_unsplash_id) ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->image_id], ['class' => 'btn btn-primary']) ?>
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'image_id',
-            'image_description',
+            'image_unsplash_id',
             'image_status:boolean',
             [
                 'attribute' => 'Collection',

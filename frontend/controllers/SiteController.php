@@ -10,11 +10,18 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use common\models\LoginForm;
+use yii\grid\GridView;
+use yii\data\ArrayDataProvider;
+
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+
+use common\models\LoginForm;
+use common\models\Collections;
+
+use frontend\services\Collection;
 
 /**
  * Site controller
@@ -37,7 +44,7 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'create', 'view', 'update', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -75,7 +82,21 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $dataProvider = [];
+        if(!is_null(Yii::$app->user->identity)){
+            $collectionService =  new Collection();
+            $collections =  $collectionService->getList(Yii::$app->user->identity->getAuthKey());
+            $dataProvider = new ArrayDataProvider([
+                'allModels' => $collections,
+                'pagination' => [
+                    'pageSize' => 10,
+                ],
+            ]);
+        }
+
+        return $this->render('index', [
+            'dataProvider'  => $dataProvider,
+        ]);
     }
 
     /**
@@ -254,6 +275,70 @@ class SiteController extends Controller
 
         return $this->render('resendVerificationEmail', [
             'model' => $model
+        ]);
+    }
+
+
+    public function actionCreate()
+    {
+        $model = new Collections();
+
+        if ($this->request->isPost) {
+            $model->setUserId(Yii::$app->user->identity->getId());
+            if ($model->load($this->request->post())) {
+                $serviceCollection = new Collection();
+                $response = $serviceCollection->post(Yii::$app->user->identity->getAuthKey(), $model->toArray());
+                if(isset($response['collection_id'])){
+                    return $this->redirect(['view', 'id' => $response['collection_id']]);
+                }else{
+                    return $this->goBack();
+                }
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('createCollection', [
+            'model' => $model,
+        ]);
+    }
+
+
+    public function actionView($id)
+    {
+        $serviceCollection =  new Collection();
+        $collection = $serviceCollection->getOneByID(Yii::$app->user->identity->getAuthKey(), $id);
+
+        return $this->render('viewCollection', [
+            'model' => $collection,
+        ]);
+    }
+
+
+    public function actionUpdate($id)
+    {
+        $serviceCollection =  new Collection();
+        $collection = $serviceCollection->getOneByID(Yii::$app->user->identity->getAuthKey(), $id);
+        $collection = [
+            'Collections' => $collection
+        ];
+        $model = new Collections();
+        $model->load($collection);
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $serviceCollection = new Collection();
+                $response = $serviceCollection->update(Yii::$app->user->identity->getAuthKey(), $model->toArray(), $id);
+                if(isset($response['collection_id'])){
+                    return $this->redirect(['view', 'id' => $response['collection_id']]);
+                }else{
+                    return $this->goBack();
+                }
+            }
+        }
+
+        return $this->render('updateCollection', [
+            'model' => $model,
         ]);
     }
 }

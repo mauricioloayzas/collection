@@ -7,6 +7,7 @@ use common\models\Collections;
 use common\models\CollectionsQuery;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
@@ -15,6 +16,8 @@ use Yii;
 use common\models\Images;
 use common\models\ImageSerach;
 use common\models\UploadFile;
+
+use common\unsplash\Search;
 
 /**
  * ImageController implements the CRUD actions for Images model.
@@ -33,7 +36,7 @@ class ImageController extends Controller
                     'class' => AccessControl::className(),
                     'rules' => [
                         [
-                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'search'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
@@ -105,42 +108,25 @@ class ImageController extends Controller
         $modelFile = new UploadFile();
         $model = new Images();
         $model->setCollectionId($params['collection_id']);
+        $model->setImageStatus(TRUE);
+        $model->setImageOrder(1);
 
-        $collectionQuery = new CollectionsQuery(new Collections());
-        $collection =$collectionQuery->byID($params['collection_id']);
-        $collection = $collection->toArray();
-
-        if ($this->request->isPost && is_array($collection) && isset($collection['user_id'])) {
-            $modelFile->imageFile = UploadedFile::getInstance($modelFile,'imageFile');
-            if(!is_dir(Yii::$app->basePath."/../api/web/images/".$collection['user_id'])){
-                mkdir(Yii::$app->basePath."/../api/web/images/".$collection['user_id'], 0777);
-            }
-
-            if(!is_dir(Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$params['collection_id'])){
-                mkdir(Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$params['collection_id'], 0777);
-            }
-
-            $folder = Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$params['collection_id']."/";
-            if($modelFile->upload($folder)){
-                $model->setCollectionId($params['collection_id']);
-                $model->setImageStatus(TRUE);
-                $model->setImageDescription($modelFile->imageFile->name);
-                if ($model->save()) {
-                    return $this->redirect([
-                        'view',
-                        'id'            => $model->image_id,
-                        'collection_id' => $params['collection_id']
-                    ]);
-                }
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect([
+                    'view',
+                    'id'            => $model->image_id,
+                    'collection_id' => $model->getCollectionId()
+                ]);
             }else{
-                $model->loadDefaultValues();
+
             }
         } else {
             $model->loadDefaultValues();
         }
 
         return $this->render('create', [
-            'modelFile'    => $modelFile,
+            'model'         => $model,
             'collection_id' => $params['collection_id']
         ]);
     }
@@ -161,37 +147,21 @@ class ImageController extends Controller
         $collection =$collectionQuery->byID($model->getCollectionId());
         $collection = $collection->toArray();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->image_id]);
-        }
-
-        if ($this->request->isPost && is_array($collection) && isset($collection['user_id'])) {
-            $modelFile->imageFile = UploadedFile::getInstance($modelFile,'imageFile');
-            if(!is_dir(Yii::$app->basePath."/../api/web/images/".$collection['user_id'])){
-                mkdir(Yii::$app->basePath."/../api/web/images/".$collection['user_id'], 0777);
-            }
-
-            if(!is_dir(Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$model->getCollectionId())){
-                mkdir(Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$model->getCollectionId(), 0777);
-            }
-
-            $folder = Yii::$app->basePath."/../api/web/images/".$collection['user_id']."/".$model->getCollectionId()."/";
-            if($modelFile->upload($folder)){
-                $model->setImageDescription($modelFile->imageFile->name);
-                if ($model->save()) {
-                    return $this->redirect([
-                        'view',
-                        'id'            => $model->image_id,
-                        'collection_id' => $model->getCollectionId()
-                    ]);
-                }
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect([
+                    'view',
+                    'id'            => $model->image_id,
+                    'collection_id' => $model->getCollectionId()
+                ]);
             }else{
-                $model->loadDefaultValues();
+
             }
+        } else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('update', [
-            'modelFile'     => $modelFile,
             'model'         => $model,
             'collection_id' => $model->getCollectionId()
         ]);
@@ -210,6 +180,25 @@ class ImageController extends Controller
 
         return $this->redirect(['index']);
     }
+
+
+    public function actionSearch()
+    {
+        $data = Yii::$app->request->post();
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $response = [];
+        if(isset($data['query'])){
+            $searchService = new Search();
+            $response = $searchService->searchPhoto($data['query']);
+        }
+
+        $view = $this->renderPartial('_search_unsplash', [
+            'imagesUnsplashes'  => $response['results']
+        ]);
+
+        return ['view' => $view];
+    }
+
 
     /**
      * Finds the Images model based on its primary key value.

@@ -18,7 +18,7 @@ class ImageSerach extends Images
     {
         return [
             [['image_id', 'collection_id'], 'integer'],
-            [['image_description'], 'safe'],
+            [['image_unsplash_id'], 'safe'],
             [['image_status'], 'boolean'],
         ];
     }
@@ -66,7 +66,7 @@ class ImageSerach extends Images
             'collection_id' => $this->collection_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'image_description', $this->image_description]);
+        $query->andFilterWhere(['ilike', 'image_unsplash_id', $this->image_unsplash_id]);
 
         return $dataProvider;
     }

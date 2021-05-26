@@ -18,10 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php if((int)$collection_id > 0): ?>
         <p>
-            <?= Html::a('Create Images', ['create',  'collection_id' => $collection_id], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('Add Image', [
+                'create',
+                'collection_id' => $collection_id
+            ], ['class' => 'btn btn-success']) ?>
         </p>
 
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+        <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 
         <div class="table-responsive">
             <?= GridView::widget([
@@ -31,7 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     ['class' => 'yii\grid\SerialColumn'],
 
                     'image_id',
-                    'image_description',
+                    'image_unsplash_id',
+                    'image_url',
                     'image_status:boolean',
                     [
                         'attribute' => 'Collection',

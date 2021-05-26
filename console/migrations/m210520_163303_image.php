@@ -30,7 +30,9 @@ class m210520_163303_image extends Migration
     {
         $this->createTable('images', [
             'image_id'          => $this->primaryKey(),
-            'image_description' => $this->string(45)->notNull(),
+            'image_unsplash_id' => $this->string(45)->notNull(),
+            'image_url'         => $this->string(250)->notNull(),
+            'image_order'       => $this->integer(),
             'image_status'      => $this->boolean()->notNull()->defaultValue(TRUE),
             'collection_id'     => $this->integer()
         ]);

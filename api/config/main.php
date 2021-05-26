@@ -52,9 +52,12 @@ return [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'collection',
                     'extraPatterns' => [
+                        'GET findbyid/{collectionID}'   => 'findbyid',
                         'GET byuser/{userID}'   => 'byuser',
+                        'PUT updatedata/{collectionID}'   => 'updatedata',
                     ],
                     'tokens' => [
+                        '{collectionID}'    => '<collectionID:\\d[\\d,]*>',
                         '{userID}'  => '<userID:\\d[\\d,]*>'
                     ]
                 ],
@@ -62,11 +65,13 @@ return [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'image',
                     'extraPatterns' => [
+                        'GET findbyid/{imageID}'   => 'findbyid',
                         'GET bycollection/{collectionID}'   => 'bycollection',
-                        'POST uploadimage'                  => 'uploadimage'
+                        'PUT updatedata/{imageID}'   => 'updatedata',
                     ],
                     'tokens' => [
-                        '{collectionID}'    => '<userID:\\d[\\d,]*>'
+                        '{collectionID}'    => '<collectionID:\\d[\\d,]*>',
+                        '{imageID}'         => '<imageID:\\d[\\d,]*>'
                     ]
                 ],
             ],

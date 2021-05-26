@@ -33,6 +33,13 @@ class ImagesQuery extends \yii\db\ActiveQuery
     }
 
 
+    public function byID($iD)
+    {
+        return $this->where(['image_status'    => TRUE])
+            ->andWhere(['image_id'   => $iD])->one();
+    }
+
+
     public function byCollections($collectionID)
     {
         return $this->where(['image_status'    => TRUE])

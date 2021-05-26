@@ -49,7 +49,10 @@ class CollectionController extends Controller
     public function actionIndex()
     {
         $searchModel = new CollectionSerach();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $params = [
+            'user_id'   => \Yii::$app->user->identity->getId()
+        ];
+        $dataProvider = $searchModel->search($params);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
