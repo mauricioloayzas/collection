@@ -49,27 +49,27 @@ return [
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
                 [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'collection',
+                    'class'         => 'yii\rest\UrlRule',
+                    'controller'    => 'collection',
                     'extraPatterns' => [
                         'GET findbyid/{collectionID}'   => 'findbyid',
-                        'GET byuser/{userID}'   => 'byuser',
-                        'PUT updatedata/{collectionID}'   => 'updatedata',
+                        'GET byuser/{userID}'           => 'byuser',
+                        'PUT updatedata/{collectionID}' => 'updatedata',
                     ],
-                    'tokens' => [
+                    'tokens'        => [
                         '{collectionID}'    => '<collectionID:\\d[\\d,]*>',
-                        '{userID}'  => '<userID:\\d[\\d,]*>'
+                        '{userID}'          => '<userID:\\d[\\d,]*>'
                     ]
                 ],
                 [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'image',
+                    'class'         => 'yii\rest\UrlRule',
+                    'controller'    => 'image',
                     'extraPatterns' => [
-                        'GET findbyid/{imageID}'   => 'findbyid',
+                        'GET findbyid/{imageID}'            => 'findbyid',
                         'GET bycollection/{collectionID}'   => 'bycollection',
-                        'PUT updatedata/{imageID}'   => 'updatedata',
+                        'PUT updatedata/{imageID}'          => 'updatedata',
                     ],
-                    'tokens' => [
+                    'tokens'        => [
                         '{collectionID}'    => '<collectionID:\\d[\\d,]*>',
                         '{imageID}'         => '<imageID:\\d[\\d,]*>'
                     ]

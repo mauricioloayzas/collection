@@ -3,9 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-use common\models\User;
-use common\models\UserSearch;
-
 /* @var $this yii\web\View */
 /* @var $model common\models\Collections */
 /* @var $form yii\widgets\ActiveForm */

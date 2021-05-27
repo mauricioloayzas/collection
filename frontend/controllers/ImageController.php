@@ -1,23 +1,18 @@
 <?php
 
-namespace backend\controllers;
-
+namespace frontend\controllers;
 
 use common\models\Collections;
 use common\models\CollectionsQuery;
-use yii\filters\AccessControl;
-use yii\web\Controller;
-use yii\web\Response;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
-use Yii;
-
 use common\models\Images;
 use common\models\ImageSerach;
-use common\models\UploadFile;
-
+use common\models\ImagesQuery;
 use common\unsplash\Search;
+use yii\filters\AccessControl;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * ImageController implements the CRUD actions for Images model.
@@ -61,6 +56,9 @@ class ImageController extends Controller
         $searchModel = new ImageSerach();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        $imagesService = new ImagesQuery(new Images());
+        $images = $imagesService->searchQueryCollection($this->request->queryParams)->all();
+
         $params = $this->request->queryParams;
         if(!isset($params['collection_id'])){
             $params['collection_id'] = 0;
@@ -69,7 +67,8 @@ class ImageController extends Controller
         return $this->render('index', [
             'searchModel'   => $searchModel,
             'dataProvider'  => $dataProvider,
-            'collection_id' => $params['collection_id']
+            'collection_id' => $params['collection_id'],
+            'images'        => $images
         ]);
     }
 
@@ -178,8 +177,8 @@ class ImageController extends Controller
 
     public function actionSearch()
     {
-        $data = Yii::$app->request->post();
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        $data = \Yii::$app->request->post();
+        \Yii::$app->response->format = Response::FORMAT_JSON;
         $response = [];
         if(isset($data['query'])){
             $searchService = new Search();

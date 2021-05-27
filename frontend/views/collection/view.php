@@ -3,24 +3,21 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-use common\models\User;
-use common\models\UserSearch;
-
 /* @var $this yii\web\View */
 /* @var $model common\models\Collections */
 
-$this->title = $model['collection_id'];
+$this->title = $model->collection_description;
 $this->params['breadcrumbs'][] = ['label' => 'Collections', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="collections-view">
 
-    <h1><?= Html::encode($model['collection_description']) ?></h1>
+    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model['collection_id']], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model['collection_id']], [
+        <?= Html::a('Update', ['update', 'id' => $model->collection_id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->collection_id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -35,14 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'collection_id',
             'collection_description',
             'collection_status:boolean',
-            /*[
-                'attribute' => 'User',
-                'value' => function ($model) {
-                    $user = User::findIdentity($model['user_id']);
-                    return $user->getUsername();
-                },
-                'format' => 'raw',
-            ],*/
         ],
     ]) ?>
 
