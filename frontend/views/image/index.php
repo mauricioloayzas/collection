@@ -15,6 +15,10 @@ $this->params['breadcrumbs'][] = $this->title;
     'https://use.fontawesome.com/releases/v5.0.13/css/all.css',
     ['depends' => [\yii\web\JqueryAsset::class]]
 ); ?>
+<?php $this->registerCssFile(
+    '@web/css/image-galery.css',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+); ?>
 <div class="images-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -35,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <a class="thumbnail" href="#" data-image-id="" data-toggle="modal" data-title=""
                    data-image="<?= $value->image_url ?>"
                    data-target="#image-gallery">
-                    <img class="img-thumbnail" style="width: 50vw; height: 20vw;"
+                    <img class="img-thumbnail"
                          src="<?= $value->image_url ?>"
                          alt="<?= $value->image_unsplash_id ?>">
                 </a>
