@@ -28,4 +28,25 @@ class Search
 
         return $data;
     }
+
+
+    public function getUrlDownload($downloadLink)
+    {
+        $client = new Client();
+        $response = $client->createRequest()
+            ->setMethod('GET')
+            ->setUrl($downloadLink)
+            ->setHeaders([
+                'Authorization' => 'Client-ID '.Yii::$app->params['unsplash_access_key'],
+                'content-type'  => 'application/json'
+            ])
+            ->send();
+        if ($response->isOk) {
+            $data = json_decode($response->getContent(), TRUE);
+        }else{
+            $data = [];
+        }
+
+        return $data;
+    }
 }
