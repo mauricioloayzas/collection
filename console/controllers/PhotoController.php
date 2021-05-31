@@ -7,9 +7,10 @@ use yii\console\widgets\Table;
 
 use common\unsplash\Search;
 
-class PhotoController extends Controller {
-
-    public function actionSearch($query, $zip = FALSE) {
+class PhotoController extends Controller
+{
+    public function actionSearch($query, $zip = FALSE)
+    {
         if(isset($query) && !empty($query)){
             $searchService = new Search();
             $response = $searchService->searchPhoto($query);
@@ -32,22 +33,21 @@ class PhotoController extends Controller {
                         }
                     }
 
-                    $dataDownload = $searchService->getUrlDownload($value['links']['download_location']);
-                    $arrayOne = explode('fm=', $dataDownload['url']);
-                    $arrayOne = explode('&', $arrayOne[1]);
-
-                    $ch = curl_init($dataDownload['url']);
-                    $fp = fopen($dirname.'/'.$value['id'].'.'.$arrayOne[0], 'w');
-                    curl_setopt($ch, CURLOPT_FILE, $fp);
-                    curl_setopt($ch, CURLOPT_HEADER, 0);
-                    curl_exec($ch);
-                    curl_close($ch);
-                    fclose($fp);
-
                     try {
+                        $arrayOne = explode('fm=', $value['urls']['small']);
+                        $arrayOne = explode('&', $arrayOne[1]);
+
+                        $ch = curl_init($value['urls']['small']);
+                        $fp = fopen($dirname . '/' . $value['id'] . '.' . $arrayOne[0], 'w');
+                        curl_setopt($ch, CURLOPT_FILE, $fp);
+                        curl_setopt($ch, CURLOPT_HEADER, 0);
+                        curl_exec($ch);
+                        curl_close($ch);
+                        fclose($fp);
+
                         $zip = new \ZipArchive();
-                        if($zip->open($dirname.'/'.$query.'.zip', \ZipArchive::CREATE)){
-                            $zip->addFile($dirname.'/'.$value['id'].'.'.$arrayOne[0]);
+                        if ($zip->open($dirname . '/' . $query . '.zip', \ZipArchive::CREATE)) {
+                            $zip->addFile($dirname . '/' . $value['id'] . '.' . $arrayOne[0], $value['id'] . '.' . $arrayOne[0]);
                         }
                         $zip->close();
                     }catch (\Exception $e){
@@ -63,7 +63,6 @@ class PhotoController extends Controller {
         }else{
             echo "The search need a word";
         }
-
 
         exit();
     }
