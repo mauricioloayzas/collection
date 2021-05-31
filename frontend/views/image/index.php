@@ -28,6 +28,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'create',
                 'collection_id' => $collection_id
             ], ['class' => 'btn btn-success']) ?>
+
+        <?=  Html::a('Download Collection', [
+            'download',
+            'collection_id' => $collection_id
+        ], [
+            'class' => 'btn btn-info',
+            'id'    => 'download-btn'
+        ]) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -39,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <a class="thumbnail" href="#" data-image-id="" data-toggle="modal" data-title=""
                    data-image="<?= $value->image_url ?>"
                    data-target="#image-gallery">
-                    <img class="img-thumbnail"
+                    <img class="img-thumbnail" id="<?= $value->image_unsplash_id ?>"
                          src="<?= $value->image_url ?>"
                          alt="<?= $value->image_unsplash_id ?>">
                 </a>
@@ -72,7 +80,9 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<?php $this->registerJsFile(
-    '@web/js/image-galery.js',
-    ['depends' => [\yii\web\JqueryAsset::class]]
-); ?>
+<?php
+    $this->registerJsFile(
+        '@web/js/image-galery.js',
+        ['depends' => [\yii\web\JqueryAsset::class]]
+    );
+?>

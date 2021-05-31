@@ -5,11 +5,16 @@ use yii\console\Controller;
 use yii\helpers\Console;
 use yii\console\widgets\Table;
 
+use common\models\Collections;
+use common\models\CollectionsQuery;
+use common\models\Images;
+use common\models\ImagesQuery;
+
 use common\unsplash\Search;
 
 class PhotoController extends Controller
 {
-    public function actionSearch($query, $zip = FALSE)
+    public function actionSearch($query)
     {
         if(isset($query) && !empty($query)){
             $searchService = new Search();
@@ -23,37 +28,6 @@ class PhotoController extends Controller
                     $value['urls']['small'],
                 ];
                 array_push($rows, $row);
-
-                if($zip){
-                    $dirname = Yii::$app->basePath ."/img/". $query;
-                    if(!@is_dir($dirname)){
-                        if(!@mkdir($dirname, 0777, true)) {
-                            $error = error_get_last();
-                            echo $error['message']."\n"; exit();
-                        }
-                    }
-
-                    try {
-                        $arrayOne = explode('fm=', $value['urls']['small']);
-                        $arrayOne = explode('&', $arrayOne[1]);
-
-                        $ch = curl_init($value['urls']['small']);
-                        $fp = fopen($dirname . '/' . $value['id'] . '.' . $arrayOne[0], 'w');
-                        curl_setopt($ch, CURLOPT_FILE, $fp);
-                        curl_setopt($ch, CURLOPT_HEADER, 0);
-                        curl_exec($ch);
-                        curl_close($ch);
-                        fclose($fp);
-
-                        $zip = new \ZipArchive();
-                        if ($zip->open($dirname . '/' . $query . '.zip', \ZipArchive::CREATE)) {
-                            $zip->addFile($dirname . '/' . $value['id'] . '.' . $arrayOne[0], $value['id'] . '.' . $arrayOne[0]);
-                        }
-                        $zip->close();
-                    }catch (\Exception $e){
-                        echo $e->getMessage(); exit();
-                    }
-                }
             }
 
             echo Table::widget([
@@ -62,6 +36,33 @@ class PhotoController extends Controller
             ]);
         }else{
             echo "The search need a word";
+        }
+
+        exit();
+    }
+
+
+    public function actionCollection($userID)
+    {
+        if(isset($userID) && !empty($userID)){
+            $collectionQuery = new CollectionsQuery(new Collections());
+            $imageQuery =  new ImagesQuery(new Images());
+
+            $collections = $collectionQuery->byUser($userID);
+            $arrData = [];
+            foreach ($collections as $key => $value){
+                $aux = $value->toArray();
+                $aux['images'] = [];
+                $images = $imageQuery->byCollections($value->getCollectionId());
+                foreach ($images as $k => $v){
+                    array_push($aux['images'], $v->toArray());
+                }
+                array_push($arrData, $aux);
+            }
+
+            echo json_encode($arrData);
+        }else{
+            echo "We need the user ID";
         }
 
         exit();

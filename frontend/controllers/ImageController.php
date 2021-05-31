@@ -31,7 +31,7 @@ class ImageController extends Controller
                     'class' => AccessControl::className(),
                     'rules' => [
                         [
-                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'search'],
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'search', 'download'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
@@ -169,9 +169,11 @@ class ImageController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $collection_id = $model->getCollectionId();
+        $model->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'collection_id' => $collection_id]);
     }
 
 
@@ -190,6 +192,58 @@ class ImageController extends Controller
         ]);
 
         return ['view' => $view];
+    }
+
+
+    public function actionDownload()
+    {
+        $imagesService = new ImagesQuery(new Images());
+        $images = $imagesService->searchQueryCollection($this->request->queryParams)->all();
+
+        $dirname = \Yii::$app->basePath ."/web/img/". $this->request->queryParams['collection_id'];
+        if(!@is_dir($dirname)){
+            if(!@mkdir($dirname, 0777, true)) {
+                $error = error_get_last();
+                echo $error['message']."\n"; exit();
+            }
+        }
+
+        foreach ($images as $key => $value){
+            try {
+                $arrayOne = explode('fm=', $value->image_url);
+                $arrayOne = explode('&', $arrayOne[1]);
+
+                $ch = curl_init($value->image_url);
+                $fp = fopen($dirname . '/' . $value->image_unsplash_id . '.' . $arrayOne[0], 'w');
+                curl_setopt($ch, CURLOPT_FILE, $fp);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                curl_exec($ch);
+                curl_close($ch);
+                fclose($fp);
+
+                $zip = new \ZipArchive();
+                if ($zip->open($dirname . '/' . $value->collection_id . '.zip', \ZipArchive::CREATE)) {
+                    $zip->addFile($dirname . '/' . $value->image_unsplash_id . '.' . $arrayOne[0], $value->image_unsplash_id . '.' . $arrayOne[0]);
+                }
+                $zip->close();
+            }catch (\Exception $e){
+                echo $e->getMessage(); exit();
+            }
+        }
+
+        $file = ($dirname."/".$this->request->queryParams['collection_id'].".zip");
+        if(!@is_dir($file)){
+            $filetype=filetype($file);
+            $filename=basename($file);
+            header ("Content-Type: ".$filetype);
+            header ("Content-Length: ".filesize($file));
+            header ("Content-Disposition: attachment; filename=".$filename);
+            readfile($file);
+
+            rmdir($dirname);
+        }else{
+            return $this->redirect(['index', 'collection_id' => $this->request->queryParams['collection_id']]);
+        }
     }
 
 

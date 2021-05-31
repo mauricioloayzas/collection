@@ -45,3 +45,4 @@ phpunit.phar
 /api/web/robots.txt
 /api/web/images
 /console/img
+/frontend/web/img
