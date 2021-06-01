@@ -33,14 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'collection_id',
                 'collection_description',
                 'collection_status:boolean',
-                [
-                    'attribute' => 'User',
-                    'value' => function ($model) {
-                        $user = User::findIdentity($model->user_id);
-                        return $user->getUsername();
-                    },
-                    'format' => 'raw',
-                ],
+                'user.email:email',
                 [
                     'attribute' => 'Images',
                     'value' => function ($model) {

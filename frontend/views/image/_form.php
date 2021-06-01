@@ -16,6 +16,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'image_url')->hiddenInput(['maxlength' => true])->label(false) ?>
 
+    <?php if($model->image_id > 0): ?>
+    <?= $form->field($model, 'image_order')->textInput(['maxlength' => true])->label("order") ?>
+    <?php endif; ?>
+
     <div class="form-group" id="submit-area">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

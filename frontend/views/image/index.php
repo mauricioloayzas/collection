@@ -8,6 +8,7 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Images';
+$this->params['breadcrumbs'][] = ['label' => 'Collection', 'url' => ['collection/view', 'id' => $collection_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -40,8 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <div class="row">
-        <div class="row">
+    <div class="row d-flex justify-content-center w-75">
+        <!--<div class="row">
             <?php foreach ($images as $key => $value): ?>
             <div class="col-lg-3 col-md-4 col-xs-6 thumb">
                 <a class="thumbnail" href="#" data-image-id="" data-toggle="modal" data-title=""
@@ -59,6 +60,36 @@ $this->params['breadcrumbs'][] = $this->title;
                 ], ['class' => 'btn btn-primary']) ?>
             </div>
             <?php endforeach; ?>
+        </div>-->
+
+        <div class="row d-flex justify-content-center w-100">
+            <div id="carouselExampleControls" class="carousel slide w-100" data-ride="carousel">
+                <div class="carousel-inner">
+                    <?php foreach ($images as $key => $value): ?>
+                        <div class="carousel-item <?php if($key ==0): ?>active <?php endif; ?>">
+                            <img class="d-block w-100" style="height: 40vw" src="<?= $value->image_url ?>" alt="<?= $value->image_unsplash_id ?>">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5><?= $value->image_unsplash_id ?></h5>
+                                <p>
+                                    <?= Html::a('Update', [
+                                        'update',
+                                        'id'            => $value->image_id,
+                                        'collection_id' => $collection_id,
+                                    ], ['class' => 'btn btn-primary']) ?>
+                                </p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>

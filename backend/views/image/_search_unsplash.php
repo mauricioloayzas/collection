@@ -29,6 +29,9 @@ use yii\widgets\ActiveForm;
         </a>
     </div>
 <?php endforeach; ?>
+<div id="message" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide">
+    <span class="text-monospace font-weight-bold">you have chosen an image</span>
+</div>
 <script>
     $('.image-found').click(function (){
         let arrayID = $(this).attr('id').split('-');
@@ -36,6 +39,8 @@ use yii\widgets\ActiveForm;
 
         $('#images-image_unsplash_id').val(arrayID[2]);
         $('#images-image_url').val(url);
+
+        $('#message').removeClass('hide');
 
         location.href = '#submit-area'
     });

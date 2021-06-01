@@ -7,7 +7,10 @@ use yii\helpers\Html;
 /* @var $model common\models\Images */
 
 $this->title = 'Add Images';
-$this->params['breadcrumbs'][] = ['label' => 'Images', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Images', 'url' => [
+    'index',
+    'collection_id' => $collection_id,
+]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="images-create">

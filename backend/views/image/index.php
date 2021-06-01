@@ -35,17 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     'image_id',
                     'image_unsplash_id',
-                    'image_url',
+                    'image_url:url',
                     'image_status:boolean',
-                    [
-                        'attribute' => 'Collection',
-                        'value' => function ($model) {
-                           $collectionQuery = new CollectionsQuery(new Collections());
-                           $collection = $collectionQuery->byID($model->collection_id)->toArray();
-                            return $collection['collection_description'];
-                        },
-                        'format' => 'raw',
-                    ],
+                    'collection.collection_description',
 
                     ['class' => 'yii\grid\ActionColumn'],
                 ],

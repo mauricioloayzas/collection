@@ -53,11 +53,8 @@ class ImageController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ImageSerach();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-
         $imagesService = new ImagesQuery(new Images());
-        $images = $imagesService->searchQueryCollection($this->request->queryParams)->all();
+        $images = $imagesService->byCollections($this->request->queryParams['collection_id']);
 
         $params = $this->request->queryParams;
         if(!isset($params['collection_id'])){
@@ -65,8 +62,6 @@ class ImageController extends Controller
         }
 
         return $this->render('index', [
-            'searchModel'   => $searchModel,
-            'dataProvider'  => $dataProvider,
             'collection_id' => $params['collection_id'],
             'images'        => $images
         ]);
@@ -141,14 +136,31 @@ class ImageController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            $data = $this->request->post();
+            if((int)$data['Images']['image_order'] != (int)$model->getImageOrder()){
+                if((int)$data['Images']['image_order'] < (int)$model->getImageOrder()){
+                    $this->updateOrder($model->getCollectionId(), (int)$data['Images']['image_order'],
+                        (int)$model->getImageOrder(), TRUE);
+                }else{
+                    $this->updateOrder($model->getCollectionId(), (int)$data['Images']['image_order'],
+                        (int)$model->getImageOrder(), FALSE);
+                }
+            }
+
+            if ($model->load($this->request->post())) {
+                if($model->save()){
+                    return $this->redirect([
+                        'view',
+                        'id'            => $model->image_id,
+                        'collection_id' => $model->getCollectionId()
+                    ]);
+                }
+            }else{
                 return $this->redirect([
                     'view',
                     'id'            => $model->image_id,
                     'collection_id' => $model->getCollectionId()
                 ]);
-            }else{
-
             }
         } else {
             $model->loadDefaultValues();
@@ -261,5 +273,35 @@ class ImageController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    protected function updateOrder($collectionID, $newOrder, $currentOrder, $orientation)
+    {
+        $imagesService = new ImagesQuery(new Images());
+        $images = $imagesService->byCollections($collectionID);
+        foreach ($images as $key => $value){
+            if($orientation){
+                if($currentOrder == (int)$value->getImageOrder()){
+                    break;
+                }else{
+                    if($newOrder == (int)$value->getImageOrder()){
+                        $value->setImageOrder((int)$value->getImageOrder() + 1);
+                        $value->save();
+                        $newOrder++;
+                    }
+                }
+            }else{
+                if($newOrder < (int)$value->getImageOrder()){
+                    break;
+                }else{
+                    if($currentOrder == (int)$value->getImageOrder()){
+                        $value->setImageOrder((int)$value->getImageOrder() - 1);
+                        $value->save();
+                        $currentOrder++;
+                    }
+                }
+            }
+        }
     }
 }

@@ -43,7 +43,8 @@ class ImagesQuery extends \yii\db\ActiveQuery
     public function byCollections($collectionID)
     {
         return $this->where(['image_status'    => TRUE])
-            ->andWhere(['collection_id'   => $collectionID])->all();
+            ->andWhere(['collection_id'   => $collectionID])
+            ->orderBy(['image_order'=>SORT_ASC])->all();
     }
 
 
@@ -58,5 +59,15 @@ class ImagesQuery extends \yii\db\ActiveQuery
                 ->andWhere(['images.collection_id'    => $params['collection_id']]);
         }
 
+    }
+
+
+    public function byCollectionAnOrder($collectionID, $order)
+    {
+        return $this->where(['image_status'    => TRUE])
+            ->andWhere([
+                'collection_id'   => $collectionID,
+                'image_order'     => $order
+            ])->one();
     }
 }

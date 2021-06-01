@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'collection_id',
             'collection_description',
             'collection_status:boolean',
+            'user.email:email'
         ],
     ]) ?>
 
