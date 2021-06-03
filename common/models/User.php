@@ -19,6 +19,7 @@ use yii\web\IdentityInterface;
  * @property int $created_at
  * @property int $updated_at
  * @property string|null $verification_token
+ * @property boolean $admin
  *
  * @property Auth[] $auths
  * @property Collections[] $collections
@@ -43,7 +44,7 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
+            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at', 'admin'], 'required'],
             [['created_at', 'updated_at'], 'default', 'value' => null],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
@@ -51,6 +52,7 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
             [['username'], 'unique'],
+            [['admin'], 'boolean'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
@@ -382,5 +384,22 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     public function setVerificationToken($verification_token)
     {
         $this->verification_token = $verification_token;
+    }
+
+
+    /**
+     * @return boolean
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param boolean $admin
+     */
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
     }
 }

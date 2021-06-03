@@ -6,7 +6,10 @@ use yii\helpers\Html;
 /* @var $model common\models\Collections */
 
 $this->title = 'Create Collections';
-$this->params['breadcrumbs'][] = ['label' => 'Collections', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Collections', 'url' => [
+    'index',
+    'user_id'   => $user_id,
+]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="collections-create">

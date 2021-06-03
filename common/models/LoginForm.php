@@ -54,10 +54,13 @@ class LoginForm extends Model
      *
      * @return bool whether the user is logged in successfully
      */
-    public function login()
+    public function login($module = 'backend')
     {
         $user = $this->getUser();
         if ($this->validate() && $this->getUser()->validatePassword($this->password)) {
+            if($this->getUser()->getAdmin() && $module == 'backend'){
+                return Yii::$app->user->login($user, $this->rememberMe ? 3600 * 24 * 30 : 0);
+            }
             return Yii::$app->user->login($user, $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
         

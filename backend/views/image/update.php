@@ -6,7 +6,10 @@ use yii\helpers\Html;
 /* @var $model common\models\Images */
 
 $this->title = 'Update Images: ' . $model->image_unsplash_id;
-$this->params['breadcrumbs'][] = ['label' => 'Images', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Images', 'url' => [
+    'index',
+    'collection_id' => $model->collection_id,
+]];
 $this->params['breadcrumbs'][] = ['label' => $model->image_unsplash_id, 'url' => ['view', 'id' => $model->image_id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

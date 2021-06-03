@@ -41,6 +41,7 @@ use yii\widgets\ActiveForm;
         $('#images-image_url').val(url);
 
         $('#message').removeClass('hide');
+        $('#imageForm').submit();
 
         location.href = '#submit-area'
     });

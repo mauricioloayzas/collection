@@ -70,4 +70,15 @@ class ImagesQuery extends \yii\db\ActiveQuery
                 'image_order'     => $order
             ])->one();
     }
+
+
+    public function getTheMaxOrder($collectionID)
+    {
+        $row = new \yii\db\Query();
+        return $row->select('Max(image_order) as max_order')
+            ->andWhere([
+                'image_status'    => TRUE,
+                'collection_id'   => $collectionID,
+            ])->from('images')->one();
+    }
 }

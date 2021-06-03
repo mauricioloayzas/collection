@@ -100,9 +100,12 @@ class ImageController extends Controller
     {
         $params = $this->request->getQueryParams();
         $model = new Images();
+        $imageQuery = new ImagesQuery($model);
+        $order = $imageQuery->getTheMaxOrder($params['collection_id']);
+
         $model->setCollectionId($params['collection_id']);
         $model->setImageStatus(TRUE);
-        $model->setImageOrder(1);
+        $model->setImageOrder((int)$order['max_order'] + 1);
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {

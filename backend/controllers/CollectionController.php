@@ -49,14 +49,13 @@ class CollectionController extends Controller
     public function actionIndex()
     {
         $searchModel = new CollectionSerach();
-        $params = [
-            'user_id'   => \Yii::$app->user->identity->getId()
-        ];
+        $params = \Yii::$app->request->getQueryParams();
         $dataProvider = $searchModel->search($params);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'searchModel'   => $searchModel,
+            'dataProvider'  => $dataProvider,
+            'user_id'       => $params['user_id']
         ]);
     }
 
@@ -80,18 +79,24 @@ class CollectionController extends Controller
      */
     public function actionCreate()
     {
+        $params = \Yii::$app->request->getQueryParams();
         $model = new Collections();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->collection_id]);
+                return $this->redirect([
+                    'view',
+                    'id'        => $model->collection_id,
+                    'user_id'   => $params['user_id']
+                ]);
             }
         } else {
             $model->loadDefaultValues();
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model'     => $model,
+            'user_id'   => $params['user_id']
         ]);
     }
 
@@ -104,14 +109,20 @@ class CollectionController extends Controller
      */
     public function actionUpdate($id)
     {
+        $params = \Yii::$app->request->getQueryParams();
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->collection_id]);
+            return $this->redirect([
+                'view',
+                'id'        => $model->collection_id,
+                'user_id'   => $model->user_id
+            ]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
+        return $this->render('create', [
+            'model'     => $model,
+            'user_id'   => $model->user_id
         ]);
     }
 
