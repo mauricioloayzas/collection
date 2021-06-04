@@ -26,20 +26,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                ['class' => 'yii\grid\SerialColumn'],
-
-                'id',
-                'username',
-                //'auth_key',
-                //'password_hash',
-                //'password_reset_token',
-                'email:email',
-                //'status',
-                //'created_at',
-                //'updated_at',
-                //'verification_token',
-
                 ['class' => 'yii\grid\ActionColumn'],
+
+                'username',
+                'email:email',
+                'admin:boolean',
                 [
                     'attribute' => 'collections',
                     'value' => function ($model) {

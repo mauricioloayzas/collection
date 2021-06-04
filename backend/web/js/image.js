@@ -13,6 +13,7 @@ $('#query').change(function (){
         },
         dataType: "json",
         beforeSend: function() {
+            $('#content-image-unsplash').html("Loading the images...");
         },
         success: function(data) {
             $('#content-image-unsplash').html(data.view);

@@ -16,6 +16,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
+    <?php $var = [ true => 'Admin', false => 'Normal User']; ?>
+    <?= $form->field($model, 'admin')->dropDownList($var, ['prompt' => 'Select an option..' ]); ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

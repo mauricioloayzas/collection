@@ -26,9 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                ['class' => 'yii\grid\SerialColumn'],
+                ['class' => 'yii\grid\ActionColumn'],
 
-                'collection_id',
                 'collection_description',
                 'collection_status:boolean',
                 [
@@ -43,8 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'format' => 'raw',
                 ],
-
-                ['class' => 'yii\grid\ActionColumn'],
             ],
         ]); ?>
     </div>

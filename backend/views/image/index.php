@@ -31,15 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
+                    ['class' => 'yii\grid\ActionColumn'],
 
-                    'image_id',
                     'image_unsplash_id',
                     'image_url:url',
                     'image_status:boolean',
                     'collection.collection_description',
-
-                    ['class' => 'yii\grid\ActionColumn'],
                 ],
             ]); ?>
         </div>

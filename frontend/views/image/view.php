@@ -38,3 +38,9 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
 </div>
+
+<div class="row">
+    <div class="col-12 text-center">
+        <img class="rounded" src="<?= $model->image_url; ?>" alt="<?= $model->image_unsplash_id; ?>">
+    </div>
+</div>

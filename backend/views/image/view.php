@@ -15,7 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="images-view">
-
     <h1><?= Html::encode($model->image_unsplash_id) ?></h1>
 
     <p>
@@ -46,5 +45,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]) ?>
+</div>
 
+<div class="row">
+    <div class="col-12 text-center">
+        <img class="rounded" src="<?= $model->image_url; ?>" alt="<?= $model->image_unsplash_id; ?>">
+    </div>
 </div>
