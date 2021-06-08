@@ -64,16 +64,17 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'username' => 'Username',
-            'auth_key' => 'Auth Key',
-            'password_hash' => 'Password Hash',
-            'password_reset_token' => 'Password Reset Token',
-            'email' => 'Email',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'verification_token' => 'Verification Token',
+            'id'                    => 'ID',
+            'username'              => 'Username',
+            'auth_key'              => 'Auth Key',
+            'password_hash'         => 'Password Hash',
+            'password_reset_token'  => 'Password Reset Token',
+            'email'                 => 'Email',
+            'status'                => 'Status',
+            'created_at'            => 'Created At',
+            'updated_at'            => 'Updated At',
+            'verification_token'    => 'Verification Token',
+            'admin'                 => 'Admin',
         ];
     }
 

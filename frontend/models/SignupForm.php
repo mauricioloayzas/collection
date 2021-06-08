@@ -57,6 +57,7 @@ class SignupForm extends Model
         $user->generateEmailVerificationToken();
         $user->setCreatedAt(date('Ymd'));
         $user->setUpdatedAt(date('Ymd'));
+        $user->setAdmin(FALSE);
 
         return $user->save() && $this->sendEmail($user);
     }

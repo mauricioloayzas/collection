@@ -76,6 +76,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'id'            => $value->image_id,
                                         'collection_id' => $collection_id,
                                     ], ['class' => 'btn btn-primary']) ?>
+                                    <?= Html::a('Delete', ['delete', 'id' => $value->image_id], [
+                                        'class' => 'btn btn-danger',
+                                        'data' => [
+                                            'confirm' => 'Are you sure you want to delete this item?',
+                                            'method' => 'post',
+                                        ],
+                                    ]) ?>
                                 </p>
                             </div>
                         </div>

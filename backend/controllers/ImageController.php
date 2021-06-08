@@ -191,9 +191,20 @@ class ImageController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $orderDeleted = (int)$model->getImageOrder();
+        $collection_id = $model->getCollectionId();
 
-        return $this->redirect(['index']);
+        $imageQuery = new ImagesQuery(new Images());
+        $image = $imageQuery->byCollectionAnOrder($collection_id, ($orderDeleted +1));
+        $this->updateOrderForDeleted($image->getCollectionId(), (int)$image->getImageOrder());
+
+        $model->delete();
+
+        return $this->redirect([
+            'index',
+            'collection_id' => $collection_id,
+        ]);
     }
 
 
@@ -257,6 +268,20 @@ class ImageController extends Controller
                         $currentOrder++;
                     }
                 }
+            }
+        }
+    }
+
+
+    protected function updateOrderForDeleted($collectionID, $currentOrder)
+    {
+        $imagesService = new ImagesQuery(new Images());
+        $images = $imagesService->byCollections($collectionID);
+        foreach ($images as $key => $value){
+            if($currentOrder == (int)$value->getImageOrder()){
+                $value->setImageOrder((int)$value->getImageOrder() - 1);
+                $value->save();
+                $currentOrder++;
             }
         }
     }
